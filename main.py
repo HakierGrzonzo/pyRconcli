@@ -1,5 +1,6 @@
 from prompt_toolkit import PromptSession, print_formatted_text, ANSI
 from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
+from prompt_toolkit.completion import NestedCompleter
 import argparse
 import mcrcon
 
@@ -27,6 +28,86 @@ def minecraft_colors_to_ansi(text):
     return text.replace('\n', '\u001b[0m\n')
 
 
+completer = NestedCompleter.from_nested_dict({
+    'attribute': None,
+    'advancement': {
+        'grant': None,
+        'revoke': None
+    },
+    'ban': None,
+    'ban-ip': None,
+    'banlist': {
+        'ips': None,
+        'players': None
+    },
+    'bossbar': {
+        'add': None,
+        'get': None,
+        'list': None,
+        'remove': None,
+        'set': None
+    },
+    'clear': None,
+    'clone': None,
+    'data': {
+        'get' : {'block':None, 'entity':None, 'storage':None},
+        'merge' : {'block':None, 'entity':None, 'storage':None},
+        'modify' : {'block':None, 'entity':None, 'storage':None},
+        'remove' : {'block':None, 'entity':None, 'storage':None}
+    },
+    'datapack': {
+        'disable': None,
+        'enable': None,
+        'list': None
+    },
+    'defaultgamemode': {
+        'adventure': None,
+        'creative':None,
+        'spectator': None,
+        'survival': None
+    },
+    'deop': None,
+    'difficulty': None,
+    'effect': {
+        'clear': None,
+        'give': None
+    },
+    'enchant': None,
+    'experience': {
+        'add': None,
+        'set': None,
+        'query': None
+    },
+    'xp': {
+        'add': None,
+        'set': None,
+        'query': None
+    },
+    'list': None,
+    'help': None,
+    'gamemode': {
+        'adventure': None,
+        'creative':None,
+        'spectator': None,
+        'survival': None
+    },
+    'time':{
+        'add': None,
+        'query': {
+            'daytime': None,
+            'gametime': None,
+            'day': None
+        },
+        'set': {
+            'day': None,
+            'night': None,
+            'noon': None,
+            'midnight': None
+        }
+    }
+
+})
+
 parser = argparse.ArgumentParser(prog="pyrconcli", description="a better terminal interface for minecraft rcon")
 parser.add_argument('ip', type = str, help = "ip adresss of server")
 parser.add_argument('password', type = str, help = "password for rcon protocol")
@@ -36,12 +117,12 @@ with mcrcon.MCRcon(args.ip, args.password, args.port) as rcon:
     session = PromptSession("rcon@{}> ".format(args.ip))
     try:
         print("type 'exit' or press crtl-d to exit")
-        command = session.prompt()
+        command = session.prompt(completer=completer)
         while command != "exit":
             resp = rcon.command(command)
             resptext = minecraft_colors_to_ansi(resp)
             print_formatted_text(ANSI(resptext))
-            command = session.prompt(auto_suggest=AutoSuggestFromHistory())
+            command = session.prompt(auto_suggest=AutoSuggestFromHistory(), completer=completer)
     except KeyboardInterrupt:
         pass
     except EOFError:
