@@ -1,3 +1,4 @@
+#!/usr/bin/python3.8
 from prompt_toolkit import PromptSession, print_formatted_text, ANSI
 from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
 from prompt_toolkit.completion import NestedCompleter
@@ -127,4 +128,3 @@ with mcrcon.MCRcon(args.ip, args.password, args.port) as rcon:
         pass
     except EOFError:
         pass
-        
