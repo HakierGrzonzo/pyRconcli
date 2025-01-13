@@ -2,8 +2,9 @@
 from prompt_toolkit import PromptSession, print_formatted_text, ANSI
 from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
 from prompt_toolkit.completion import NestedCompleter
+from prompt_toolkit.history import FileHistory
 import argparse
-import mcrcon
+import mcrcon, os
 
 def minecraft_colors_to_ansi(text):
     color_dict = {
@@ -114,11 +115,17 @@ parser.add_argument('ip', type = str, help = "ip adresss of server")
 parser.add_argument('password', type = str, help = "password for rcon protocol")
 parser.add_argument('-P', type= int, help= "rcon port (default is 25575)", default=25575, dest="port")
 args = parser.parse_args()
+history_file = '~/.pyrconcli_prompt_history'
+try:
+    open(os.path.expanduser(history_file), 'a+').close()
+except FileNotFoundError:
+    open(os.path.expanduser(history_file), 'w+').close()
+
 with mcrcon.MCRcon(args.ip, args.password, args.port) as rcon:
-    session = PromptSession("rcon@{}> ".format(args.ip))
+    session = PromptSession("rcon@{}> ".format(args.ip), history=FileHistory(os.path.expanduser(history_file)))
     try:
         print("type 'exit' or press crtl-d to exit")
-        command = session.prompt(completer=completer)
+        command = session.prompt(completer=completer, auto_suggest=AutoSuggestFromHistory())
         while command != "exit":
             resp = rcon.command(command)
             resptext = minecraft_colors_to_ansi(resp)
