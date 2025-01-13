@@ -6,6 +6,9 @@ authors = ["Grzegorz Koperwas <admin@grzegorzkoperwas.site>"]
 license = "GPL"
 readme = "README.md"
 
+[project.scripts]
+pyrconcli = "pyrconcli:main"
+
 [tool.poetry.dependencies]
 python = "^3.13"
 prompt-toolkit = "^3.0.48"
