@@ -1,5 +1,9 @@
 # pyRconcli
 
+```
+pip install pyrconcli
+```
+
 A usable minecraft rcon terminal interface made with prompt_toolkit and mcrcon.
 
 ## Features:
@@ -12,13 +16,13 @@ A usable minecraft rcon terminal interface made with prompt_toolkit and mcrcon.
 
 Just run it like so:
 ```
-./main.py <host> <password>
+python -m pyrconcli <host> <password>
 ```
 
-If your server uses diffrent port for rcon you can specify it like so:
+If your server uses different port for rcon you can specify it like so:
 
 ```
-./main.py <host> <password> -P <port_number>
+python -m pyrconcli <host> <password> -P <port_number>
 ```
 
 Press crtl-d or crtl-c or just type `exit` to terminate your connection.
